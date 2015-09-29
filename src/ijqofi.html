@@ -114,7 +114,7 @@ window.onload = function() {
     var winflag = 0;
     var table;
 	var tmp = 0;
-	var currenttime = 15;
+	var currenttime = 30;
 	var standoff = 0;
 	var arrx = [];
 	var arry = [];
@@ -599,7 +599,7 @@ window.onload = function() {
             }
             if(flagcurrent == true)
                 winflag = 1;
-            currenttime = 15;
+            currenttime = 30;
         }
         else
         {
@@ -614,7 +614,7 @@ window.onload = function() {
             }
             if(flagcurrent == true)
                 winflag = 2;
-            currenttime = 15;
+            currenttime = 30;
         }
 	}
 	function counttime()
@@ -640,14 +640,17 @@ window.onload = function() {
 	function possibledamkamove(q,w)
 	{
 	    var possible;
+	    var possiblex1 = [];
+	    var possibley1 = [];
+	    var checkpossible = false;
 	    for(var i = 1;i<7;i++)
         {
             possible = checkfreecell(q*i,w*i);
             if(!possible)
             {
-                field.getid("divi-"+(currentfigure.y + w*i)+"-"+(currentfigure.x + q*i)).style.opacity = "0.7";
-                possiblex.push((currentfigure.x + q*i));
-                possibley.push((currentfigure.y + w*i));
+                //field.getid("divi-"+(currentfigure.y + w*i)+"-"+(currentfigure.x + q*i)).style.opacity = "0.7";
+                possiblex1.push((currentfigure.x + q*i));
+                possibley1.push((currentfigure.y + w*i));
             }
             else
             {
@@ -670,9 +673,10 @@ window.onload = function() {
                 {
                     if(!checkfreecell(q*i + q,w*i + w))
                     {
-                        field.getid("divi-"+(currentfigure.y + w*i + w)+"-"+(currentfigure.x + q*i + q)).style.opacity = "0.7";
-                        possiblex.push((currentfigure.x + q*i + q));
-                        possibley.push((currentfigure.y + w*i + w));
+                        //field.getid("divi-"+(currentfigure.y + w*i + w)+"-"+(currentfigure.x + q*i + q)).style.opacity = "0.7";
+                        possiblex1.push((currentfigure.x + q*i + q));
+                        possibley1.push((currentfigure.y + w*i + w));
+                        checkpossible = true;
                     }
                     else
                     {
@@ -683,6 +687,29 @@ window.onload = function() {
                 {
                     i = 1000;
                 }
+            }
+        }
+        if(stop == true)
+        {
+            for(var i = 0;i<possiblex1.length;i++)
+            {
+                possiblex.push(possiblex1[i]);
+                possibley.push(possibley1[i]);
+            }
+            for(var i = 0;i<possiblex.length;i++)
+                field.getid("divi-"+possibley[i]+"-"+possiblex[i]).style.opacity = "0.7";
+        }
+        if(stop == false)
+        {
+            if(checkpossible == true)
+            {
+                for(var i = 0;i<possiblex1.length;i++)
+                {
+                    possiblex.push(possiblex1[i]);
+                    possibley.push(possibley1[i]);
+                }
+                for(var i = 0;i<possiblex.length;i++)
+                    field.getid("divi-"+possibley[i]+"-"+possiblex[i]).style.opacity = "0.7";
             }
         }
 	}
@@ -743,6 +770,7 @@ window.onload = function() {
 	}
 	function distinguishcell()
 	{
+	    turnoffpossiblemove();
 	    //Подсветка возможных ходов
         if(currentfigure.damka == true)
         {
@@ -783,7 +811,7 @@ window.onload = function() {
         standoff = 0;
         field.getid("startnewgame").innerHTML = '<div id="newgame" class = "startnewgame">Начать игру</div>';
         var innerrules = 'Для того чтобы сыграть игру <br> с тем же игроком, нажмите <br> по надписи с результатом игры. <br>';
-        innerrules += 'Для того чтобы начать игру <br> с другим игроком, нажмите <br> на кнопку "Новая игра". <br> ОЛЛ РАЙТС РЕЗЕРВД'
+        innerrules += 'Для того чтобы начать игру <br> с другим игроком, нажмите <br> на кнопку "Новая игра". <br> ОЛЛ РАЙТС РЕЗЕРВД';
         field.getid("rules").innerHTML = innerrules;
 	}
 	function windivfunction()
@@ -812,7 +840,7 @@ window.onload = function() {
         scoreblack = 0;
         field.CreateScore();
         field.ChangeScore(scorered,scoreblack);
-        currenttime = 15;
+        currenttime = 30;
         field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
         field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
         if(winflag == 0)
@@ -1077,7 +1105,7 @@ window.onload = function() {
                                 arrfigure[flagdamka - 5].y = 100;
                                 arrfigure[flagdamka - 5].position();
                                 var nextchoice = false;
-                                turnoffpossiblemove();
+                                stop = false;
                                 distinguishcell();
                                 for(var i = 1;i<7;i++)
                                 {
@@ -1274,6 +1302,15 @@ window.onload = function() {
         .startnewgame:hover{
         background:linear-gradient(to bottom,#FF0000,#000000);
         }
+        .ground{
+        width:100%;
+        height:100%;
+        left:0px;
+        top:0px;
+        position:absolute;
+        opacity:0.2;
+        background:linear-gradient(to top,#FF00F0,#0000AA);
+        }
         .cell{
         width: 50px;
         height: 50px;
@@ -1367,6 +1404,7 @@ window.onload = function() {
     </style>
 </head>
 <body>
+<div id="background" class = "ground"></div>
 <div class = "new_game_class" id="gamemenu">
     <p class="InputData"><strong>Введите данные для авторизации</strong></p>
     <p class="pclass1">Введите логин</p>
