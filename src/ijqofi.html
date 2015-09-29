@@ -115,6 +115,7 @@ window.onload = function() {
     var table;
 	var tmp = 0;
 	var currenttime = 15;
+	var standoff = 0;
 	var arrx = [];
 	var arry = [];
 	var arrfigure = [];
@@ -618,7 +619,6 @@ window.onload = function() {
 	}
 	function counttime()
 	{
-        field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
         field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
         if(queue == true)
             field.getid("timer").style.background = 'red';
@@ -629,25 +629,11 @@ window.onload = function() {
         {
             if(queue == true)
             {
-                var code = 'ПОБЕДИЛИ ЧЕРНЫЕ';
-                field.getid("windiv").innerHTML = code;
-                field.ScoreDisappear();
-                field.getid("field").innerHTML = '';
-                field.getid("gamer").style.border = "0px solid #000000";
-                arrfigure.splice(0,24);
-                field.getid("time").innerHTML = '';
-                field.getid("statistictable").removeChild(table);
+                winflagtrue('ПОБЕДИЛИ ЧЕРНЫЕ');
             }
             else
             {
-                var code = 'ПОБЕДИЛИ КРАСНЫЕ';
-                field.getid("windiv").innerHTML = code;
-                field.ScoreDisappear();
-                field.getid("field").innerHTML = '';
-                field.getid("gamer").style.border = "0px solid #000000";
-                arrfigure.splice(0,24);
-                field.getid("time").innerHTML = '';
-                field.getid("statistictable").removeChild(table);
+                winflagtrue('ПОБЕДИЛИ КРАСНЫЕ');
             }
         }
 	}
@@ -781,9 +767,28 @@ window.onload = function() {
         possiblex.splice(0,possiblex.length);
         possibley.splice(0,possibley.length);
 	}
-	field.getid("windiv").onclick = function()
-    {
-        field.CreateField();
+	function winflagtrue(b)
+	{
+	    var code = b;
+        field.getid("windiv").innerHTML = code;
+        if(standoff >= 2)
+            field.getid("windiv").style.left = "500px";
+        field.ScoreDisappear();
+        field.getid("field").innerHTML = '';
+        field.getid("gamer").style.border = "0px solid #000000";
+        arrfigure.splice(0,24);
+        field.getid("time").innerHTML = '';
+        field.getid("statistictable").removeChild(table);
+        field.getid("standoff").innerHTML = '';
+        standoff = 0;
+        field.getid("startnewgame").innerHTML = '<div id="newgame" class = "startnewgame">Начать игру</div>';
+        var innerrules = 'Для того чтобы сыграть игру <br> с тем же игроком, нажмите <br> по надписи с результатом игры. <br>';
+        innerrules += 'Для того чтобы начать игру <br> с другим игроком, нажмите <br> на кнопку "Новая игра". <br> ОЛЛ РАЙТС РЕЗЕРВД'
+        field.getid("rules").innerHTML = innerrules;
+	}
+	function windivfunction()
+	{
+	    field.CreateField();
         for(var i = 0;i<24;i++)
         {
             var figure = new Figure(i);
@@ -808,8 +813,63 @@ window.onload = function() {
         field.CreateScore();
         field.ChangeScore(scorered,scoreblack);
         currenttime = 15;
-        setTimeout(function runtime(){if(winflag == 0){counttime();setTimeout(runtime,1000);}},1000);
+        field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
+        field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
+        if(winflag == 0)
+            setTimeout(function runtime(){counttime();setTimeout(runtime,1000);},1000);
         field.getid("statistictable").appendChild(table);
+        field.getid("standoff").innerHTML = '<div id="innerstandoff" class = "buttonstandoff">Ничья</div>';
+        field.getid("windiv").style.left = "300px";
+        field.getid("startnewgame").innerHTML = '';
+        field.getid("rules").innerHTML = '';
+	}
+	field.getid("standoff").onclick = function()
+	{
+	    standoff++;
+	    if(standoff >= 2)
+	    {
+	        winflagtrue('НИЧЬЯ');
+	    }
+	    else
+	    {
+            var winkflag = true;
+            var countwink = 0;
+            setTimeout
+            (
+                function runtime()
+                {
+                    if(countwink<=30)
+                    {
+                        if(winkflag == true)
+                        {
+                            field.getid("innerstandoff").style.background = 'red';
+                            winkflag = false;
+                        }
+                        else
+                        {
+                            field.getid("innerstandoff").style.background = 'black';
+                            winkflag = true;
+                        }
+                        setTimeout(runtime,100);
+                        countwink++;
+                    }
+                    else
+                    {
+                        standoff = 0;
+                        field.getid("standoff").innerHTML = '<div id="innerstandoff" class = "buttonstandoff">Ничья</div>';
+                    }
+                },
+                4
+            );
+	    }
+	}
+	field.getid("startnewgame").onclick = function()
+	{
+	    windivfunction();
+	}
+	field.getid("windiv").onclick = function()
+    {
+        windivfunction();
     }
 	field.getid("button").onclick = function()
 	{
@@ -837,10 +897,14 @@ window.onload = function() {
         {
             field.getid("gamer").style.border = "5px solid #000000";
         }
-        setTimeout(function runtime(){if(winflag == 0){counttime();setTimeout(runtime,1000);}},1000);
+        field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
+        field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
+        if(winflag == 0)
+            setTimeout(function runtime(){counttime();setTimeout(runtime,1000);},1000);
         //var code = '<table class="statistictable" border="1"><tr><td bgcolor="white"></td><th>WINS</th><th>LOSES</th></tr><tr><td>Player1</td><td class="statistictd"></td><td class="statistictd"></td></tr><tr><td>Player2</td><td class="statistictd"></td><td class="statistictd"></td></tr></table>';
         table = link.import.querySelector('table');
         field.getid("statistictable").appendChild(table);
+        field.getid("standoff").innerHTML = '<div id="innerstandoff" class = "buttonstandoff">Ничья</div>';
 	}
 	field.getid("field").onmouseover = function()
 	{
@@ -1092,25 +1156,11 @@ window.onload = function() {
         }
         if(winflag == 1)
         {
-            var code = 'ПОБЕДИЛИ КРАСНЫЕ';
-            field.getid("windiv").innerHTML = code;
-            field.ScoreDisappear();
-            field.getid("field").innerHTML = '';
-            field.getid("gamer").style.border = "0px solid #000000";
-            arrfigure.splice(0,24);
-            field.getid("time").innerHTML = '';
-            field.getid("statistictable").removeChild(table);
+            winflagtrue('ПОБЕДИЛИ КРАСНЫЕ');
         }
         if(winflag == 2)
         {
-            var code = 'ПОБЕДИЛИ ЧЕРНЫЕ';
-            field.getid("windiv").innerHTML = code;
-            field.ScoreDisappear();
-            field.getid("field").innerHTML = '';
-            field.getid("gamer").style.border = "0px solid #000000";
-            arrfigure.splice(0,24);
-            field.getid("time").innerHTML = '';
-            field.getid("statistictable").removeChild(table);
+            winflagtrue('ПОБЕДИЛИ ЧЕРНЫЕ');
         }
         if(cur<12)
         {
@@ -1195,6 +1245,35 @@ window.onload = function() {
         background:pink;
         color:black;
         }
+        .buttonstandoff{
+        left:950px;
+        top:245px;
+        padding:70px;
+        color:white;
+        background:lightblue;
+        position:absolute;
+        border-radius:15px;
+        cursor:default;
+        }
+        .buttonstandoff:hover{
+        text-shadow:4px 4px 0 hsl(120,100%,10%);
+        font-size:120%;
+        background:hsl(290,100%,50%);
+        }
+        .startnewgame{
+        left:430px;
+        top:200px;
+        position:absolute;
+        padding:100px;
+        color:white;
+        border-radius:4px;
+        background:linear-gradient(to top,#FF0000,#000000);
+        font-size:300%;
+        cursor:default;
+        }
+        .startnewgame:hover{
+        background:linear-gradient(to bottom,#FF0000,#000000);
+        }
         .cell{
         width: 50px;
         height: 50px;
@@ -1261,6 +1340,7 @@ window.onload = function() {
         font-size:105%;
         color:white;
         border-radius:4px;
+        cursor:default;
         }
         .scoreblack{
         width:100px;
@@ -1272,6 +1352,7 @@ window.onload = function() {
         font-size:105%;
         color:white;
         border-radius:4px;
+        cursor:default;
         }
         .timer{
         padding:10px;
@@ -1281,6 +1362,7 @@ window.onload = function() {
         background-color:black;
         color:white;
         font-size:100%;
+        cursor:default;
         }
     </style>
 </head>
@@ -1298,6 +1380,9 @@ window.onload = function() {
 <div id="windiv" class = "text"></div>
 <div id="time"></div>
 <div id="statistictable"></div>
+<div id="standoff"></div>
+<div id="startnewgame"></div>
+<div id="rules"></div>
 <link rel="import" id="link" href="table.html">
 </body>
 </html>
