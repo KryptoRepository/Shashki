@@ -114,8 +114,7 @@ window.onload = function() {
     var winflag = 0;
     var table;
 	var tmp = 0;
-	var currenttime = 30;
-	var standoff = 0;
+	var currenttime = 15;
 	var arrx = [];
 	var arry = [];
 	var arrfigure = [];
@@ -262,10 +261,6 @@ window.onload = function() {
                                 }
                             }
                         }
-                    }
-                    if(stop == false)
-                    {
-                        distinguishcell();
                     }
                 }
                 if(cur<12)
@@ -599,7 +594,7 @@ window.onload = function() {
             }
             if(flagcurrent == true)
                 winflag = 1;
-            currenttime = 30;
+            currenttime = 15;
         }
         else
         {
@@ -614,11 +609,12 @@ window.onload = function() {
             }
             if(flagcurrent == true)
                 winflag = 2;
-            currenttime = 30;
+            currenttime = 15;
         }
 	}
 	function counttime()
 	{
+        field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
         field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
         if(queue == true)
             field.getid("timer").style.background = 'red';
@@ -629,28 +625,39 @@ window.onload = function() {
         {
             if(queue == true)
             {
-                winflagtrue('ПОБЕДИЛИ ЧЕРНЫЕ');
+                var code = 'ПОБЕДИЛИ ЧЕРНЫЕ';
+                field.getid("windiv").innerHTML = code;
+                field.ScoreDisappear();
+                field.getid("field").innerHTML = '';
+                field.getid("gamer").style.border = "0px solid #000000";
+                arrfigure.splice(0,24);
+                field.getid("time").innerHTML = '';
+                field.getid("statistictable").removeChild(table);
             }
             else
             {
-                winflagtrue('ПОБЕДИЛИ КРАСНЫЕ');
+                var code = 'ПОБЕДИЛИ КРАСНЫЕ';
+                field.getid("windiv").innerHTML = code;
+                field.ScoreDisappear();
+                field.getid("field").innerHTML = '';
+                field.getid("gamer").style.border = "0px solid #000000";
+                arrfigure.splice(0,24);
+                field.getid("time").innerHTML = '';
+                field.getid("statistictable").removeChild(table);
             }
         }
 	}
 	function possibledamkamove(q,w)
 	{
 	    var possible;
-	    var possiblex1 = [];
-	    var possibley1 = [];
-	    var checkpossible = false;
 	    for(var i = 1;i<7;i++)
         {
             possible = checkfreecell(q*i,w*i);
             if(!possible)
             {
-                //field.getid("divi-"+(currentfigure.y + w*i)+"-"+(currentfigure.x + q*i)).style.opacity = "0.7";
-                possiblex1.push((currentfigure.x + q*i));
-                possibley1.push((currentfigure.y + w*i));
+                field.getid("divi-"+(currentfigure.y + w*i)+"-"+(currentfigure.x + q*i)).style.opacity = "0.7";
+                possiblex.push((currentfigure.x + q*i));
+                possibley.push((currentfigure.y + w*i));
             }
             else
             {
@@ -673,10 +680,9 @@ window.onload = function() {
                 {
                     if(!checkfreecell(q*i + q,w*i + w))
                     {
-                        //field.getid("divi-"+(currentfigure.y + w*i + w)+"-"+(currentfigure.x + q*i + q)).style.opacity = "0.7";
-                        possiblex1.push((currentfigure.x + q*i + q));
-                        possibley1.push((currentfigure.y + w*i + w));
-                        checkpossible = true;
+                        field.getid("divi-"+(currentfigure.y + w*i + w)+"-"+(currentfigure.x + q*i + q)).style.opacity = "0.7";
+                        possiblex.push((currentfigure.x + q*i + q));
+                        possibley.push((currentfigure.y + w*i + w));
                     }
                     else
                     {
@@ -687,29 +693,6 @@ window.onload = function() {
                 {
                     i = 1000;
                 }
-            }
-        }
-        if(stop == true)
-        {
-            for(var i = 0;i<possiblex1.length;i++)
-            {
-                possiblex.push(possiblex1[i]);
-                possibley.push(possibley1[i]);
-            }
-            for(var i = 0;i<possiblex.length;i++)
-                field.getid("divi-"+possibley[i]+"-"+possiblex[i]).style.opacity = "0.7";
-        }
-        if(stop == false)
-        {
-            if(checkpossible == true)
-            {
-                for(var i = 0;i<possiblex1.length;i++)
-                {
-                    possiblex.push(possiblex1[i]);
-                    possibley.push(possibley1[i]);
-                }
-                for(var i = 0;i<possiblex.length;i++)
-                    field.getid("divi-"+possibley[i]+"-"+possiblex[i]).style.opacity = "0.7";
             }
         }
 	}
@@ -745,32 +728,28 @@ window.onload = function() {
         }
         else
         {
-            if(stop == true)
+            if(queue == true)
             {
-                if(queue == true)
+                if(((q == 1)&&(w == 1))||((q == -1)&&(w == 1)))
                 {
-                    if(((q == 1)&&(w == 1))||((q == -1)&&(w == 1)))
-                    {
-                        field.getid("divi-"+(currentfigure.y + w)+"-"+(currentfigure.x + q)).style.opacity = "0.7";
-                        possiblex.push((currentfigure.x + q));
-                        possibley.push((currentfigure.y + w));
-                    }
+                    field.getid("divi-"+(currentfigure.y + w)+"-"+(currentfigure.x + q)).style.opacity = "0.7";
+                    possiblex.push((currentfigure.x + q));
+                    possibley.push((currentfigure.y + w));
                 }
-                else
+            }
+            else
+            {
+                if(((q == 1)&&(w == -1))||((q == -1)&&(w == -1)))
                 {
-                    if(((q == 1)&&(w == -1))||((q == -1)&&(w == -1)))
-                    {
-                        field.getid("divi-"+(currentfigure.y + w)+"-"+(currentfigure.x + q)).style.opacity = "0.7";
-                        possiblex.push((currentfigure.x + q));
-                        possibley.push((currentfigure.y + w));
-                    }
+                    field.getid("divi-"+(currentfigure.y + w)+"-"+(currentfigure.x + q)).style.opacity = "0.7";
+                    possiblex.push((currentfigure.x + q));
+                    possibley.push((currentfigure.y + w));
                 }
             }
         }
 	}
 	function distinguishcell()
 	{
-	    turnoffpossiblemove();
 	    //Подсветка возможных ходов
         if(currentfigure.damka == true)
         {
@@ -795,28 +774,9 @@ window.onload = function() {
         possiblex.splice(0,possiblex.length);
         possibley.splice(0,possibley.length);
 	}
-	function winflagtrue(b)
-	{
-	    var code = b;
-        field.getid("windiv").innerHTML = code;
-        if(standoff >= 2)
-            field.getid("windiv").style.left = "500px";
-        field.ScoreDisappear();
-        field.getid("field").innerHTML = '';
-        field.getid("gamer").style.border = "0px solid #000000";
-        arrfigure.splice(0,24);
-        field.getid("time").innerHTML = '';
-        field.getid("statistictable").removeChild(table);
-        field.getid("standoff").innerHTML = '';
-        standoff = 0;
-        field.getid("startnewgame").innerHTML = '<div id="newgame" class = "startnewgame">Начать игру</div>';
-        var innerrules = 'Для того чтобы сыграть игру <br> с тем же игроком, нажмите <br> по надписи с результатом игры. <br>';
-        innerrules += 'Для того чтобы начать игру <br> с другим игроком, нажмите <br> на кнопку "Новая игра". <br> ОЛЛ РАЙТС РЕЗЕРВД';
-        field.getid("rules").innerHTML = innerrules;
-	}
-	function windivfunction()
-	{
-	    field.CreateField();
+	field.getid("windiv").onclick = function()
+    {
+        field.CreateField();
         for(var i = 0;i<24;i++)
         {
             var figure = new Figure(i);
@@ -840,64 +800,9 @@ window.onload = function() {
         scoreblack = 0;
         field.CreateScore();
         field.ChangeScore(scorered,scoreblack);
-        currenttime = 30;
-        field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
-        field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
-        if(winflag == 0)
-            setTimeout(function runtime(){counttime();setTimeout(runtime,1000);},1000);
+        currenttime = 15;
+        setTimeout(function runtime(){if(winflag == 0){counttime();setTimeout(runtime,1000);}},1000);
         field.getid("statistictable").appendChild(table);
-        field.getid("standoff").innerHTML = '<div id="innerstandoff" class = "buttonstandoff">Ничья</div>';
-        field.getid("windiv").style.left = "300px";
-        field.getid("startnewgame").innerHTML = '';
-        field.getid("rules").innerHTML = '';
-	}
-	field.getid("standoff").onclick = function()
-	{
-	    standoff++;
-	    if(standoff >= 2)
-	    {
-	        winflagtrue('НИЧЬЯ');
-	    }
-	    else
-	    {
-            var winkflag = true;
-            var countwink = 0;
-            setTimeout
-            (
-                function runtime()
-                {
-                    if(countwink<=30)
-                    {
-                        if(winkflag == true)
-                        {
-                            field.getid("innerstandoff").style.background = 'red';
-                            winkflag = false;
-                        }
-                        else
-                        {
-                            field.getid("innerstandoff").style.background = 'black';
-                            winkflag = true;
-                        }
-                        setTimeout(runtime,100);
-                        countwink++;
-                    }
-                    else
-                    {
-                        standoff = 0;
-                        field.getid("standoff").innerHTML = '<div id="innerstandoff" class = "buttonstandoff">Ничья</div>';
-                    }
-                },
-                4
-            );
-	    }
-	}
-	field.getid("startnewgame").onclick = function()
-	{
-	    windivfunction();
-	}
-	field.getid("windiv").onclick = function()
-    {
-        windivfunction();
     }
 	field.getid("button").onclick = function()
 	{
@@ -925,14 +830,10 @@ window.onload = function() {
         {
             field.getid("gamer").style.border = "5px solid #000000";
         }
-        field.getid("time").innerHTML = '<div id = "timer" class = "timer"></div>';
-        field.getid("timer").innerHTML = 'Осталось времени: ' + currenttime;
-        if(winflag == 0)
-            setTimeout(function runtime(){counttime();setTimeout(runtime,1000);},1000);
+        setTimeout(function runtime(){if(winflag == 0){counttime();setTimeout(runtime,1000);}},1000);
         //var code = '<table class="statistictable" border="1"><tr><td bgcolor="white"></td><th>WINS</th><th>LOSES</th></tr><tr><td>Player1</td><td class="statistictd"></td><td class="statistictd"></td></tr><tr><td>Player2</td><td class="statistictd"></td><td class="statistictd"></td></tr></table>';
         table = link.import.querySelector('table');
         field.getid("statistictable").appendChild(table);
-        field.getid("standoff").innerHTML = '<div id="innerstandoff" class = "buttonstandoff">Ничья</div>';
 	}
 	field.getid("field").onmouseover = function()
 	{
@@ -1105,7 +1006,7 @@ window.onload = function() {
                                 arrfigure[flagdamka - 5].y = 100;
                                 arrfigure[flagdamka - 5].position();
                                 var nextchoice = false;
-                                stop = false;
+                                turnoffpossiblemove();
                                 distinguishcell();
                                 for(var i = 1;i<7;i++)
                                 {
@@ -1184,11 +1085,25 @@ window.onload = function() {
         }
         if(winflag == 1)
         {
-            winflagtrue('ПОБЕДИЛИ КРАСНЫЕ');
+            var code = 'ПОБЕДИЛИ КРАСНЫЕ';
+            field.getid("windiv").innerHTML = code;
+            field.ScoreDisappear();
+            field.getid("field").innerHTML = '';
+            field.getid("gamer").style.border = "0px solid #000000";
+            arrfigure.splice(0,24);
+            field.getid("time").innerHTML = '';
+            field.getid("statistictable").removeChild(table);
         }
         if(winflag == 2)
         {
-            winflagtrue('ПОБЕДИЛИ ЧЕРНЫЕ');
+            var code = 'ПОБЕДИЛИ ЧЕРНЫЕ';
+            field.getid("windiv").innerHTML = code;
+            field.ScoreDisappear();
+            field.getid("field").innerHTML = '';
+            field.getid("gamer").style.border = "0px solid #000000";
+            arrfigure.splice(0,24);
+            field.getid("time").innerHTML = '';
+            field.getid("statistictable").removeChild(table);
         }
         if(cur<12)
         {
@@ -1273,44 +1188,6 @@ window.onload = function() {
         background:pink;
         color:black;
         }
-        .buttonstandoff{
-        left:950px;
-        top:245px;
-        padding:70px;
-        color:white;
-        background:lightblue;
-        position:absolute;
-        border-radius:15px;
-        cursor:default;
-        }
-        .buttonstandoff:hover{
-        text-shadow:4px 4px 0 hsl(120,100%,10%);
-        font-size:120%;
-        background:hsl(290,100%,50%);
-        }
-        .startnewgame{
-        left:430px;
-        top:200px;
-        position:absolute;
-        padding:100px;
-        color:white;
-        border-radius:4px;
-        background:linear-gradient(to top,#FF0000,#000000);
-        font-size:300%;
-        cursor:default;
-        }
-        .startnewgame:hover{
-        background:linear-gradient(to bottom,#FF0000,#000000);
-        }
-        .ground{
-        width:100%;
-        height:100%;
-        left:0px;
-        top:0px;
-        position:absolute;
-        opacity:0.2;
-        background:linear-gradient(to top,#FF00F0,#0000AA);
-        }
         .cell{
         width: 50px;
         height: 50px;
@@ -1377,7 +1254,6 @@ window.onload = function() {
         font-size:105%;
         color:white;
         border-radius:4px;
-        cursor:default;
         }
         .scoreblack{
         width:100px;
@@ -1389,7 +1265,6 @@ window.onload = function() {
         font-size:105%;
         color:white;
         border-radius:4px;
-        cursor:default;
         }
         .timer{
         padding:10px;
@@ -1399,12 +1274,10 @@ window.onload = function() {
         background-color:black;
         color:white;
         font-size:100%;
-        cursor:default;
         }
     </style>
 </head>
 <body>
-<div id="background" class = "ground"></div>
 <div class = "new_game_class" id="gamemenu">
     <p class="InputData"><strong>Введите данные для авторизации</strong></p>
     <p class="pclass1">Введите логин</p>
@@ -1418,9 +1291,6 @@ window.onload = function() {
 <div id="windiv" class = "text"></div>
 <div id="time"></div>
 <div id="statistictable"></div>
-<div id="standoff"></div>
-<div id="startnewgame"></div>
-<div id="rules"></div>
 <link rel="import" id="link" href="table.html">
 </body>
 </html>
